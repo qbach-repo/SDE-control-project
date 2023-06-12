@@ -37,3 +37,32 @@ Refer to the code and comments in main.cpp
 
 ![Screen Shot 2023-06-08 at 8 35 19 PM](https://github.com/qbach-repo/SDE-PID-Controller/assets/58492405/f783f0b1-ac8a-4541-9e0a-6a84249ed3fe)
 
+## Experiment 4 - Result
+![Figure_4 1](https://github.com/qbach-repo/SDE-control-project/assets/58492405/91517f11-f639-490c-8b06-668c79c7d62b)
+![Figure_4 2](https://github.com/qbach-repo/SDE-control-project/assets/58492405/43b40bb9-f8dd-476a-a4ee-2ffb69147ffd)
+
+## Experiment 5 - Result
+![Figure_5 1](https://github.com/qbach-repo/SDE-control-project/assets/58492405/1b799c11-55ac-4f36-84dd-25167ad55910)
+![Figure_5 2](https://github.com/qbach-repo/SDE-control-project/assets/58492405/85b22f04-179f-46ed-a014-41db3b9783f0)
+![Screen Shot 2023-06-12 at 11 30 16 AM](https://github.com/qbach-repo/SDE-control-project/assets/58492405/73f4f949-8b30-463a-ada6-7cbfa8bb66d3)
+
+## PID Effect
+- P: the p term is the propotional term in the pid controller which would take the current error at delta t to influence the output of the controllers (throttle and steer in this case). As we can see in the plot of the steer output, the p term will contribute to the steer output whenever the error is large.
+- I: the i term is the total error so far, the i term will come in to effect when the accumulate error increase too high; when the p and the d term control output are not enough to correct the control the i term will come into play as it would take a bigger effect when the accumulate error is large enough. 
+- D: the d term is the rate of change of the error, in the case when we see that the car needs to make adjustment to the steering to avoid obstacles, the rate of change of the error will increase drastically and the d term will take effect. This can be seen in the plot of steering as the slope of the error becomes more stiff, the output of the steering will increase due to the d term. 
+
+## The Best Parameters 
+- Steer: pid_steer.Init(0.3, 0.01, 0.8, 1.2, -1.2);
+- Throttle: pid_throttle.Init(0.13, 0.001,0.02, 1, -1);
+
+## Elaborate on Critical Analysis of PID
+ - How would you design a way to automatically tune the PID parameters? - automate tuning for the PID can be done by running the simulation multiple times and observe the error and output of the controllers. From these datapoint we can implement a regression to find the best parameters automatically.
+
+- PID controller is a model free controller, i.e. it does not use a model of the car. Could you explain the pros and cons of this type of controller?
+  - Pros:
+    + It's simply to implement
+    + can replicate the controller for other agents not just cars
+  - Cons:
+    + Have to spend a long time to tune the parameters or implement a complicated tuning algorithm
+    + If we change the vehicle we have to tune the parameters again since the configuration of steering or throttling are different based on the vehicle
+
