@@ -60,7 +60,7 @@ Refer to the code and comments in main.cpp
 
 - PID controller is a model free controller, i.e. it does not use a model of the car. Could you explain the pros and cons of this type of controller?
   - Pros:
-    + It's simply to implement
+    + It's simple to implement
     + can replicate the controller for other agents not just cars
   - Cons:
     + Have to spend a long time to tune the parameters or implement a complicated tuning algorithm
