@@ -225,9 +225,9 @@ int main ()
   **/
 
   PID pid_steer = PID();
-  pid_steer.Init(0.008,0.002,0.001,1.2,-1.2);
+  pid_steer.Init(0.3, 0.01, 0.8, 1.2, -1.2);
   PID pid_throttle = PID();
-  pid_throttle.Init(0.1,0.01,0.1,1,-1);
+  pid_throttle.Init(0.13, 0.001,0.02, 1, -1);
 
   h.onMessage([&pid_steer, &pid_throttle, &new_delta_time, &timer, &prev_timer, &i, &prev_timer](uWS::WebSocket<uWS::SERVER> ws, char *data, size_t length, uWS::OpCode opCode)
   {
@@ -297,22 +297,39 @@ int main ()
 
 
           double steer_output;
-          int idx = 0;
-          // The assumption is the car only goes forward
-          while(x_position < x_points[idx])
-          { 
-            idx++;
-          }
           
-          auto target_yaw = angle_between_points(x_position, y_position, x_points[idx], y_points[idx]);
-                                                                                            
-                                                                              
+          double smallest_d;                 
+          int idx = -1;
+          auto wp_count = x_points.size();
+          for (int i = 0; i < wp_count; ++i)
+          {
+            auto d = pow(x_points[i]-x_position, 2) + pow(y_points[i]-y_position, 2);
+            if (i == 0)
+            {
+              smallest_d = d;
+              continue;
+            }
+            if (d < smallest_d)
+            {
+              smallest_d = d;
+              idx = i;
+            }
+          }
+
+          idx = (idx + 1) % wp_count;                                                                              
           /**
           * TODO (step 3): compute the steer error (error_steer) from the position and the desired trajectory
           **/
-                                                                                                 
+          cout << "x: " << x_position << endl;
+          cout << "y: " << y_position << endl;
+          cout << "wp_x: " << x_points[idx] << endl;
+          cout << "wp_y: " << y_points[idx] << endl;
+
+          auto target_yaw = angle_between_points(x_position, y_position, x_points[idx], y_points[idx]);
+                                                    
+          // I find that adding the error of y position help the car to turn less aggresively 
           // due to negative coefficients                                                                                      
-          error_steer = yaw - target_yaw;
+          error_steer = yaw - target_yaw + y_position - y_points[idx];
 
           /**
           * TODO (step 3): uncomment these lines
